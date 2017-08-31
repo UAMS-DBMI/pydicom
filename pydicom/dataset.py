@@ -137,6 +137,7 @@ class Dataset(dict):
     def __init__(self, *args, **kwargs):
         """Create a new Dataset instance."""
         self._parent_encoding = kwargs.get('parent_encoding', default_encoding)
+        self._private_creators = None
         dict.__init__(self, *args)
 
     def __enter__(self):
@@ -182,6 +183,24 @@ class Dataset(dict):
         data_element = DataElement(tag, VR, value)
         # use data_element.tag since DataElement verified it
         self[data_element.tag] = data_element
+
+    def _build_private_creators(self):
+        """Build a list of private_creators in this Dataset"""
+        self._private_creators = dict()
+        for ele in self:
+            if ele.tag.is_private:
+                if not hasattr(ele, 'private_creator'):
+                    prefix = ele.tag.element << 8
+                    self._private_creators[ele.value] = prefix
+
+    def private_data_element(self, group, creator_name, element):
+        """Retrieve a private by its creator name and element"""
+        if self._private_creators is None:
+            self._build_private_creators()
+
+        prefix = self._private_creators[creator_name]
+        real_element = prefix | element
+        return self[group,real_element]
 
     def data_element(self, name):
         """Return the DataElement corresponding to the element keyword `name`.
