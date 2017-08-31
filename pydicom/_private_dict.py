@@ -7,6 +7,13 @@ dictionary key is a map of DICOM tag to (VR, VM, name, is_retired).
 """
 
 private_dictionaries = {
+    'CTP': {
+        '0013xx10': ('LO', '1', 'Project Name', ''),
+        '0013xx11': ('LO', '1', 'Trial Name', ''),
+        '0013xx12': ('LO', '1', 'Site Name', ''),
+        '0013xx13': ('LO', '1', 'Site ID', ''),
+        '0013xx20': ('LO', '1', 'Unknown', ''),
+    },
     '1.2.840.113663.1': {
         '0029xx00': ('US', '1', 'Unknown', ''),  # noqa
         '0029xx01': ('US', '1', 'Unknown', ''),  # noqa
